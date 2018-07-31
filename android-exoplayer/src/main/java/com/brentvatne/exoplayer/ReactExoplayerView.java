@@ -56,6 +56,7 @@ import com.google.android.exoplayer2.trackselection.MappingTrackSelector;
 import com.google.android.exoplayer2.trackselection.TrackSelection;
 import com.google.android.exoplayer2.trackselection.TrackSelectionArray;
 import com.google.android.exoplayer2.upstream.DataSource;
+import com.google.android.exoplayer2.upstream.DefaultAllocator;
 import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
 import com.google.android.exoplayer2.upstream.cache.Cache;
 import com.google.android.exoplayer2.upstream.cache.CacheDataSourceFactory;
@@ -88,6 +89,11 @@ class ReactExoplayerView extends FrameLayout implements
         DEFAULT_COOKIE_MANAGER = new CookieManager();
         DEFAULT_COOKIE_MANAGER.setCookiePolicy(CookiePolicy.ACCEPT_ORIGINAL_SERVER);
     }
+
+    private static int minBufferMs = DefaultLoadControl.DEFAULT_MIN_BUFFER_MS;
+    private static int maxBufferMs = DefaultLoadControl.DEFAULT_MAX_BUFFER_MS;
+    private static int bufferForPlaybackMs = DefaultLoadControl.DEFAULT_BUFFER_FOR_PLAYBACK_MS;
+    private static int bufferForPlaybackAfterRebufferMs = DefaultLoadControl.DEFAULT_BUFFER_FOR_PLAYBACK_AFTER_REBUFFER_MS;
 
     private final VideoEventEmitter eventEmitter;
 
@@ -233,7 +239,9 @@ class ReactExoplayerView extends FrameLayout implements
         if (player == null) {
             TrackSelection.Factory videoTrackSelectionFactory = new AdaptiveTrackSelection.Factory(BANDWIDTH_METER);
             trackSelector = new DefaultTrackSelector(videoTrackSelectionFactory);
-            player = ExoPlayerFactory.newSimpleInstance(getContext(), trackSelector, new DefaultLoadControl());
+            DefaultAllocator allocator = new DefaultAllocator(true, C.DEFAULT_BUFFER_SEGMENT_SIZE);
+            DefaultLoadControl defaultLoadControl = new DefaultLoadControl(allocator, minBufferMs, maxBufferMs, bufferForPlaybackMs, bufferForPlaybackAfterRebufferMs, -1, true);
+            player = ExoPlayerFactory.newSimpleInstance(getContext(), trackSelector, defaultLoadControl);
             player.addListener(this);
             player.setMetadataOutput(this);
             exoPlayerView.setPlayer(player);
@@ -864,5 +872,22 @@ class ReactExoplayerView extends FrameLayout implements
 
     public void setUseTextureView(boolean useTextureView) {
         exoPlayerView.setUseTextureView(useTextureView);
+    }
+
+
+    public static void setMinBufferMs(int newMinBufferMs) {
+        minBufferMs = newMinBufferMs;
+    }
+
+    public static void setMaxBufferMs(int newMaxBufferMs) {
+        maxBufferMs = newMaxBufferMs;
+    }
+
+    public static void setBufferForPlaybackMs(int newBufferForPlaybackMs) {
+        bufferForPlaybackMs = newBufferForPlaybackMs;
+    }
+
+    public static void setBufferForPlaybackAfterRebufferMs(int newBufferForPlaybackAfterRebufferMs) {
+        bufferForPlaybackAfterRebufferMs = newBufferForPlaybackAfterRebufferMs;
     }
 }

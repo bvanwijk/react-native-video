@@ -23,13 +23,16 @@ const styles = StyleSheet.create({
 const {
   ExoPlayerCache,
   VideoCache,
+  ExoPlayerConfig
 } = NativeModules;
 
 const VideoPlayerCache = Platform.OS === "android" ? ExoPlayerCache : VideoCache;
+const VideoPlayerConfig = Platform.OS === "android" ? ExoPlayerConfig : undefined;
 
 export {
   TextTrackType,
   VideoPlayerCache,
+  VideoPlayerConfig
 };
 
 export default class Video extends Component {
