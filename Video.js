@@ -22,17 +22,14 @@ const styles = StyleSheet.create({
 
 const {
   ExoPlayerCache,
-  VideoCache,
-  ExoPlayerConfig
+  VideoCache
 } = NativeModules;
 
 const VideoPlayerCache = Platform.OS === "android" ? ExoPlayerCache : VideoCache;
-const VideoPlayerConfig = Platform.OS === "android" ? ExoPlayerConfig : undefined;
 
 export {
   TextTrackType,
-  VideoPlayerCache,
-  VideoPlayerConfig
+  VideoPlayerCache
 };
 
 export default class Video extends Component {
@@ -386,6 +383,12 @@ Video.propTypes = {
   paused: PropTypes.bool,
   muted: PropTypes.bool,
   volume: PropTypes.number,
+  loadControl: PropTypes.shape({
+    minBufferMs: PropTypes.number,
+    maxBufferMs: PropTypes.number,
+    bufferForPlaybackMs: PropTypes.number,
+    bufferForPlaybackAfterRebufferMs: PropTypes.number,
+  }),
   stereoPan: PropTypes.number,
   rate: PropTypes.number,
   playInBackground: PropTypes.bool,
