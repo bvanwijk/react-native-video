@@ -248,7 +248,7 @@ var styles = StyleSheet.create({
 - [textTracks](#texttracks)
 - [useTextureView](#usetextureview)
 - [volume](#volume)
-- [loadControl](#loadcontrol)
+- [bufferConfig](#bufferconfig)
 
 ### Event props
 
